@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CNU ECE Study Hub | Cebu Normal University</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cnu: {
+              crimson: '#7B1113',
+              crimsonDark: '#560B0D',
+              gold: '#D4AF37',
+              goldDark: '#AA8820',
+              goldLight: '#F3E5AB',
+              ivory: '#FDFCFA',
+              charcoal: '#232020',
+              slate: '#6B7280'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['Cinzel', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .crimson-gradient { background: linear-gradient(135deg, #7B1113 0%, #560B0D 100%); }
+    .gold-gradient { background: linear-gradient(135deg, #D4AF37 0%, #AA8820 100%); }
+    .active-nav { border-bottom: 2px solid #D4AF37; color: #D4AF37 !important; font-weight: 600; }
+  </style>
+</head>
+<body class="bg-cnu-ivory text-cnu-charcoal font-sans min-h-screen flex flex-col antialiased">
+
+  <!-- TOP INSTITUTIONAL BAR -->
+  <div class="bg-cnu-crimsonDark text-cnu-goldLight text-xs py-1.5 px-4 sm:px-8 flex justify-between items-center border-b border-cnu-gold/30">
+    <div class="flex items-center space-x-2">
+      <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+      <span class="font-medium tracking-wide">Cebu Normal University • College of Teacher Education</span>
+    </div>
+    <div class="flex items-center space-x-4">
+      <span class="hidden md:inline text-gray-300">ECE 211: Early Childhood Education Hub</span>
+      <span class="bg-cnu-crimson px-2 py-0.5 rounded text-[10px] font-bold text-cnu-gold border border-cnu-gold/40">DEMO VERIFIED</span>
+    </div>
+  </div>
+
+  <!-- NAVIGATION HEADER (VISIBLE AFTER LOGIN) -->
+  <header id="main-header" class="bg-cnu-crimson text-white shadow-lg sticky top-0 z-40 hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3.5 cursor-pointer" onclick="handleLogoClick()">
+          <div class="w-12 h-12 rounded-full border-2 border-cnu-gold flex items-center justify-center bg-white shadow-inner p-1">
+            <div class="w-full h-full rounded-full bg-cnu-crimson flex items-center justify-center text-cnu-gold font-serif font-bold text-lg">
+              CNU
+            </div>
+          </div>
+          <div>
+            <div class="font-serif text-lg font-bold text-white flex items-center gap-2">
+              ECE Study Hub
+              <span class="text-xs bg-cnu-gold text-cnu-crimsonDark font-sans font-bold px-1.5 py-0.5 rounded">Faculty Portfolio</span>
+            </div>
+            <p class="text-[11px] text-cnu-goldLight tracking-wider uppercase font-medium">Early Childhood Education Dept</p>
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="hidden md:flex space-x-6 items-center text-sm font-medium">
+          <button id="nav-student" onclick="navigateTo('student-dash')" class="nav-btn text-white/90 hover:text-cnu-gold transition py-1">Student Dashboard</button>
+          <button id="nav-lesson" onclick="navigateTo('lesson')" class="nav-btn text-white/90 hover:text-cnu-gold transition py-1">DAP Lesson Notes</button>
+          <button id="nav-quiz" onclick="navigateTo('quiz')" class="nav-btn text-white/90 hover:text-cnu-gold transition py-1">Knowledge Quiz</button>
+          <!-- Instructor Link (Strictly hidden from students) -->
+          <button id="nav-instructor" onclick="navigateTo('instructor-dash')" class="nav-btn text-white/90 hover:text-cnu-gold transition py-1 hidden">
+            <span class="flex items-center gap-1.5 text-cnu-gold font-bold">
+              ★ Instructor Command Center
+            </span>
+          </button>
+        </nav>
+
+        <!-- Profile & Logout Area -->
+        <div class="flex items-center space-x-4">
+          <div class="text-right">
+            <div id="user-display-name" class="text-sm font-semibold text-white leading-tight">Maria Santos</div>
+            <div id="user-display-role" class="text-[11px] text-cnu-gold font-medium">BSED ECE Student</div>
+          </div>
+          <button onclick="handleLogout()" class="bg-black/30 hover:bg-black/50 text-white border border-white/30 hover:border-cnu-gold px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+            Log Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================= -->
+  <!-- 1. LOGIN GATEWAY (VISIBLE ON PAGE LOAD)                 -->
+  <!-- ======================================================= -->
+  <section id="login-gateway" class="flex-grow flex items-center justify-center p-4 py-8">
+    <div class="bg-white max-w-lg w-full rounded-2xl shadow-2xl border-t-4 border-cnu-crimson overflow-hidden">
+      
+      <!-- Institutional Header -->
+      <div class="p-6 text-center bg-gray-50 border-b border-gray-100">
+        <div class="w-16 h-16 rounded-full bg-cnu-crimson text-cnu-gold mx-auto flex items-center justify-center font-serif text-2xl font-bold border-2 border-cnu-gold shadow-md mb-3">
+          CNU
+        </div>
+        <h2 class="font-serif text-xl font-bold text-gray-900">CNU ECE Study Hub</h2>
+        <p class="text-xs text-gray-500 mt-1">Teaching Innovation Portfolio • Cebu Normal University</p>
+      </div>
+
+      <!-- Quick 1-Click Access Buttons (For instant preview) -->
+      <div class="p-4 bg-amber-50/70 border-b border-amber-200/60">
+        <p class="text-xs font-bold text-amber-900 mb-2 uppercase tracking-wide text-center">⚡ 1-Click Instant Preview (Select Role):</p>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="quickLoginStudent()" class="px-3 py-2 bg-cnu-crimson hover:bg-cnu-crimsonDark text-white text-xs font-bold rounded-lg shadow transition text-center">
+            Login as Student (Maria)
+          </button>
+          <button onclick="quickLoginInstructor()" class="px-3 py-2 bg-cnu-charcoal hover:bg-black text-cnu-gold text-xs font-bold rounded-lg shadow transition text-center border border-cnu-gold/40">
+            Login as Instructor (Dr. Vega)
+          </button>
+        </div>
+      </div>
+
+      <!-- Standard Login Switch Tabs -->
+      <div class="flex border-b border-gray-200 text-xs font-bold text-center">
+        <button id="tab-student" onclick="switchLoginTab('student')" class="w-1/2 py-3 border-b-2 border-cnu-crimson text-cnu-crimson bg-white transition">
+          Student Portal
+        </button>
+        <button id="tab-faculty" onclick="switchLoginTab('faculty')" class="w-1/2 py-3 border-b-2 border-transparent text-gray-500 hover:text-gray-800 bg-gray-50 transition">
+          Faculty / Instructor Portal
+        </button>
+      </div>
+
+      <!-- Student Login Form -->
+      <div id="form-student-container" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Student ID Number</label>
+          <input type="text" id="input-student-id" value="2024-0891" class="w-full text-xs px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cnu-crimson">
+          <p class="text-[11px] text-gray-400 mt-1">Default test ID: 2024-0891 (Maria Santos)</p>
+        </div>
+        <button onclick="loginAsStudent()" class="w-full py-2.5 bg-cnu-crimson hover:bg-cnu-crimsonDark text-white text-xs font-bold rounded-lg shadow transition">
+          Access Student Learning Area →
+        </button>
+      </div>
+
+      <!-- Faculty Login Form -->
+      <div id="form-faculty-container" class="p-6 space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Faculty Institutional Email</label>
+          <input type="email" id="input-faculty-email" value="e.vega@cnu.edu.ph" class="w-full text-xs px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cnu-gold">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Faculty Security PIN / Password</label>
+          <input type="password" id="input-faculty-pin" value="cnu123" class="w-full text-xs px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cnu-gold">
+          <p class="text-[11px] text-gray-400 mt-1">Demo PIN is: <span class="text-cnu-crimson font-bold">cnu123</span></p>
+        </div>
+        <button onclick="loginAsFaculty()" class="w-full py-2.5 bg-cnu-charcoal hover:bg-black text-cnu-gold text-xs font-bold rounded-lg shadow transition border border-cnu-gold/40">
+          Sign In to Instructor Analytics →
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================= -->
+  <!-- 2. MAIN APPLICATION (UNLOCKED AFTER LOGIN)               -->
+  <!-- ======================================================= -->
+  <main id="app-viewport" class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
+
+    <!-- --------------------------------------- -->
+    <!-- VIEW A: STUDENT DASHBOARD               -->
+    <!-- --------------------------------------- -->
+    <div id="view-student-dash" class="space-y-8 hidden">
+      <!-- Welcome Banner -->
+      <div class="crimson-gradient rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border-t-4 border-cnu-gold">
+        <div class="relative z-10 max-w-3xl">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cnu-gold text-cnu-crimsonDark mb-3">
+            Academic Year 2026-2027 • 1st Semester
+          </span>
+          <h1 class="text-2xl sm:text-3xl font-serif font-bold">Maayong Pag-abot, <span id="dash-greeting-name">Maria</span>!</h1>
+          <p class="mt-2 text-sm text-gray-200 leading-relaxed">
+            Welcome to the digital learning node for Early Childhood Education. Track your progress, study the core DAP framework, and test your mastery with research-backed feedback.
+          </p>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <button onclick="navigateTo('lesson')" class="gold-gradient text-cnu-crimsonDark font-bold px-4 py-2 rounded-lg text-xs shadow hover:opacity-90">
+              Read Lesson: DAP Framework →
+            </button>
+            <button onclick="navigateTo('quiz')" class="bg-white/10 hover:bg-white/20 text-white border border-white/30 font-bold px-4 py-2 rounded-lg text-xs shadow">
+              Take 5-Question Quiz →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+          <p class="text-xs text-cnu-slate font-medium">Assigned Module</p>
+          <p class="text-xl font-bold text-cnu-crimson mt-1">DAP in Early Childhood</p>
+          <p class="text-[11px] text-emerald-600 font-medium mt-1">Module 3 • Active</p>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+          <p class="text-xs text-cnu-slate font-medium">Your Assessment Score</p>
+          <p id="dash-score-display" class="text-xl font-bold text-gray-900 mt-1">-- / 5</p>
+          <p id="dash-score-status" class="text-[11px] text-amber-600 font-medium mt-1">Awaiting first attempt</p>
+        </div>
+        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+          <p class="text-xs text-cnu-slate font-medium">Privacy Status</p>
+          <p class="text-xl font-bold text-emerald-700 mt-1">Private & Encrypted</p>
+          <p class="text-[11px] text-gray-500 mt-1">Only you and Dr. Vega can see this</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- --------------------------------------- -->
+    <!-- VIEW B: DAP LESSON CONTENT              -->
+    <!-- --------------------------------------- -->
+    <div id="view-lesson" class="space-y-6 hidden">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-4 mb-4">
+          <div>
+            <span class="text-xs font-bold text-cnu-crimson uppercase tracking-wider bg-cnu-crimson/10 px-2.5 py-1 rounded">Module 3 • Early Childhood Pedagogy</span>
+            <h1 class="text-2xl font-serif font-bold text-gray-900 mt-2">Developmentally Appropriate Practice (DAP)</h1>
+            <p class="text-xs text-gray-500 mt-0.5">Faculty Lead: Dr. Elena Vega • CNU College of Teacher Education</p>
+          </div>
+          <button onclick="navigateTo('quiz')" class="px-4 py-2 bg-cnu-crimson text-white text-xs font-bold rounded-lg shadow hover:bg-cnu-crimsonDark transition">
+            Take Assessment Quiz →
+          </button>
+        </div>
+
+        <!-- Instructor Resource Download Box -->
+        <div class="my-6 p-4 rounded-xl bg-cnu-gold/10 border border-cnu-gold/40 flex flex-wrap justify-between items-center gap-3">
+          <div>
+            <p class="text-xs font-bold text-gray-900">Lecture Deck: ECE211_Module3_DAP_Principles.pptx (14.2 MB)</p>
+            <p class="text-[11px] text-gray-500">Official CNU PowerPoint slides with local early learning contextualization</p>
+          </div>
+          <button onclick="alert('Downloading ECE211_Module3_DAP_Principles.pptx')" class="text-xs bg-white text-cnu-crimson font-bold border border-cnu-crimson px-3.5 py-1.5 rounded-lg shadow-sm hover:bg-gray-50">
+            Download PPT Deck
+          </button>
+        </div>
+
+        <!-- Lesson Objectives -->
+        <div class="bg-amber-50/60 border-l-4 border-cnu-gold p-4 rounded-r-xl mb-6 text-xs sm:text-sm text-gray-800">
+          <h2 class="font-bold text-cnu-crimson uppercase tracking-wide mb-1 font-serif">Learning Objectives</h2>
+          <ol class="list-decimal list-inside space-y-1">
+            <li>Analyze the <strong>three core considerations</strong> of DAP: Commonality, Individuality, and Context.</li>
+            <li>Differentiate between constructive play-based inquiry and inappropriate "push-down" academic drills.</li>
+            <li>Apply culturally responsive teaching tailored to Philippine Mother Tongue preschool environments.</li>
+            <li>Evaluate continuous, authentic observational assessment practices.</li>
+          </ol>
+        </div>
+
+        <!-- Core Content Sections -->
+        <div class="space-y-6 text-sm text-gray-700 leading-relaxed">
+          <section>
+            <h2 class="text-base font-bold text-cnu-crimson font-serif mb-1">1. The Three Core Considerations</h2>
+            <p class="mb-3">According to the National Association for the Education of Young Children (NAEYC), teaching decisions must balance three essential pillars:</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div class="p-3 bg-gray-50 border rounded-lg">
+                <span class="font-bold text-cnu-crimson block mb-1">1. Commonality</span>
+                Universal age-related developmental milestones and cognitive progression shared by all human children.
+              </div>
+              <div class="p-3 bg-gray-50 border rounded-lg">
+                <span class="font-bold text-cnu-crimson block mb-1">2. Individuality</span>
+                Each child's unique developmental pace, personality, learning style, and neurodiversity.
+              </div>
+              <div class="p-3 bg-gray-50 border rounded-lg">
+                <span class="font-bold text-cnu-crimson block mb-1">3. Sociocultural Context</span>
+                Familial customs, community traditions, and native language (Mother Tongue) that give meaning to children's experiences.
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 class="text-base font-bold text-cnu-crimson font-serif mb-1">2. Combating the "Push-Down" Curriculum</h2>
+            <p>
+              A major hazard in early childhood education is the <em>push-down curriculum</em>—forcing young children to sit for hours doing repetitive, abstract paper-and-pencil worksheets. DAP advocates for <strong>purposeful play</strong>, hands-on sensory exploration, and collaborative problem-solving.
+            </p>
+          </section>
+        </div>
+
+        <div class="mt-8 pt-4 border-t border-gray-100 flex justify-end">
+          <button onclick="navigateTo('quiz')" class="px-6 py-2.5 bg-cnu-crimson text-white text-xs font-bold rounded-lg shadow hover:bg-cnu-crimsonDark">
+            Proceed to Assessment Module →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- --------------------------------------- -->
+    <!-- VIEW C: 5-QUESTION DAP QUIZ             -->
+    <!-- --------------------------------------- -->
+    <div id="view-quiz" class="space-y-6 hidden">
+      <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <span class="text-xs font-bold uppercase text-cnu-crimson bg-cnu-crimson/10 px-2.5 py-1 rounded">Formative Evaluation</span>
+          <h2 class="text-xl font-serif font-bold text-gray-900 mt-2">DAP Mastery Quiz (5 Questions)</h2>
+          <p class="text-xs text-gray-500 mt-0.5">Every option contains deep pedagogical rationale displayed after submission</p>
+        </div>
+        <div id="quiz-badge-score" class="text-right hidden">
+          <span class="text-xs text-gray-500 block">Your Score:</span>
+          <span id="quiz-final-score" class="text-2xl font-bold text-cnu-crimson">5 / 5 (100%)</span>
+        </div>
+      </div>
+
+      <!-- Retake Locked Banner -->
+      <div id="quiz-locked-msg" class="hidden bg-amber-50 border-l-4 border-amber-500 p-4 text-xs text-amber-800 rounded-r-lg">
+        <strong>Attempt Logged:</strong> Your assessment has been permanently recorded in the institutional database. Retakes are locked unless unlocked by Dr. Elena Vega.
+      </div>
+
+      <!-- Quiz Form -->
+      <form id="quiz-form" onsubmit="submitQuiz(event)" class="space-y-6">
+        <div id="quiz-questions-area" class="space-y-6">
+          <!-- Populated by JS -->
+        </div>
+
+        <div id="quiz-btn-container" class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+          <button type="submit" class="px-6 py-2.5 bg-cnu-crimson hover:bg-cnu-crimsonDark text-white text-xs font-bold rounded-lg shadow">
+            Submit Assessment & Reveal Rationales →
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- --------------------------------------- -->
+    <!-- VIEW D: INSTRUCTOR COMMAND CENTER       -->
+    <!-- --------------------------------------- -->
+    <div id="view-instructor-dash" class="space-y-8 hidden">
+      <!-- Faculty Header Banner -->
+      <div class="bg-cnu-charcoal text-white rounded-2xl p-6 sm:p-8 shadow-xl border-t-4 border-cnu-gold">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="px-2.5 py-0.5 rounded text-[11px] font-bold bg-cnu-gold text-cnu-crimsonDark uppercase tracking-wider">Faculty Portal</span>
+            <h1 class="text-2xl font-serif font-bold mt-1">Instructor Analytics: Dr. Elena Vega</h1>
+            <p class="text-xs text-gray-300">Course: ECE 211 (Early Childhood Foundations) • Section A</p>
+          </div>
+          <button onclick="exportCSV()" class="px-4 py-2 bg-cnu-crimson hover:bg-cnu-crimsonLight text-white rounded-lg text-xs font-bold shadow flex items-center gap-1.5 border border-cnu-gold/40">
+            Export Gradebook CSV (3-Year Backup)
+          </button>
+        </div>
+      </div>
+
+      <!-- Top Analytics Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+          <p class="text-xs text-gray-500 font-medium">Class Completion</p>
+          <p class="text-2xl font-bold text-gray-900 mt-1" id="inst-stat-completed">6 / 7 Students</p>
+          <p class="text-[11px] text-emerald-600 mt-1">85.7% submitted</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+          <p class="text-xs text-gray-500 font-medium">Class Mean Score</p>
+          <p class="text-2xl font-bold text-cnu-crimson mt-1">4.3 / 5.0 (86%)</p>
+          <p class="text-[11px] text-emerald-600 mt-1">Above target threshold</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+          <p class="text-xs text-gray-500 font-medium">Retention Policy</p>
+          <p class="text-2xl font-bold text-cnu-goldDark mt-1">3 Years</p>
+          <p class="text-[11px] text-gray-500 mt-1">Archived until Oct 2029</p>
+        </div>
+      </div>
+
+      <!-- Item Analysis (Learning Gap Diagnostics) -->
+      <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-3">
+        <div class="flex justify-between items-center">
+          <h2 class="font-bold text-sm text-gray-900 font-serif">Item Analysis & Diagnostic Insights</h2>
+          <span class="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-600">Module 3 Evaluation</span>
+        </div>
+        <p class="text-xs text-gray-500">Real-time breakdown of class accuracy across learning objectives:</p>
+        <div class="space-y-3 pt-2 text-xs">
+          <div>
+            <div class="flex justify-between font-semibold"><span>Q1: Core Considerations of DAP</span><span class="text-emerald-700">93% Accuracy</span></div>
+            <div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-emerald-600 h-2 rounded-full" style="width: 93%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-semibold"><span>Q2: Push-down Curriculum Pitfalls</span><span class="text-emerald-700">86% Accuracy</span></div>
+            <div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-emerald-600 h-2 rounded-full" style="width: 86%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-semibold"><span>Q3: Mother Tongue & Cultural Context</span><span class="text-amber-600">62% Accuracy (Most Commonly Missed)</span></div>
+            <div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-amber-500 h-2 rounded-full" style="width: 62%"></div></div>
+            <p class="text-[11px] text-gray-500 mt-1 italic">Notice: Students require further clarification on scaffolding via Mother Tongue.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Gradebook Table -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="p-4 bg-gray-50 border-b border-gray-200 font-bold text-xs text-gray-700 flex justify-between items-center">
+          <span>Student Gradebook & Retake Permissions</span>
+          <span class="text-[11px] text-gray-400 font-normal">Click "Unlock Retake" to allow a second attempt</span>
+        </div>
+        <table class="w-full text-left text-xs">
+          <thead class="bg-gray-100 text-gray-600 uppercase border-b border-gray-200 font-semibold">
+            <tr>
+              <th class="py-3 px-4">Student ID</th>
+              <th class="py-3 px-4">Full Name</th>
+              <th class="py-3 px-4">Score</th>
+              <th class="py-3 px-4">Status</th>
+              <th class="py-3 px-4 text-center">Instructor Action</th>
+            </tr>
+          </thead>
+          <tbody id="instructor-roster-tbody" class="divide-y divide-gray-200">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ======================================================= -->
+  <!-- 3. JAVASCRIPT STATE ENGINE                              -->
+  <!-- ======================================================= -->
+  <script>
+    // 5 Complete Pedagogical DAP Questions
+    const dapQuestions = [
+      {
+        id: 1,
+        question: "According to the National Association for the Education of Young Children (NAEYC), which triad constitutes the three fundamental core considerations of Developmentally Appropriate Practice?",
+        options: [
+          { key: "A", text: "Standardized curricular pacing, teacher-directed modeling, and chronological grade readiness.", isCorrect: false, rationale: "Incorrect. Standardized pacing ignores individual child differences." },
+          { key: "B", text: "Commonality in child development, individuality of each child, and the sociocultural context in which children live.", isCorrect: true, rationale: "CORRECT! NAEYC defines DAP around Commonality (universal milestones), Individuality (unique traits), and Context (cultural/linguistic background)." },
+          { key: "C", text: "Rote memorization capacity, motor skill mastery, and early alphabetization drills.", isCorrect: false, rationale: "Incorrect. Represents an outdated rote drill framework." },
+          { key: "D", text: "Parental socioeconomic status, teacher seniority, and institutional accreditation ratings.", isCorrect: false, rationale: "Incorrect. These are institutional factors, not child-centered pedagogical ones." }
+        ]
+      },
+      {
+        id: 2,
+        question: "A kindergarten teacher in Cebu is instructed to replace hands-on learning centers with two hours of seated, silent workbook tracing to 'prepare learners for primary grade exams.' How should an early childhood specialist evaluate this decision under DAP?",
+        options: [
+          { key: "A", text: "Appropriate, because early exposure to formal seated testing develops academic stamina.", isCorrect: false, rationale: "Incorrect. Research shows excessive seated desk-work in kindergarten induces stress and inhibits executive functioning." },
+          { key: "B", text: "Appropriate, provided that all learners complete the same workbook page within the identical time limit.", isCorrect: false, rationale: "Incorrect. Uniform time requirements violate the Individuality consideration." },
+          { key: "C", text: "Inappropriate, because it embodies a 'push-down' curriculum that neglects sensory-motor exploration and play-based inquiry essential for 5-year-olds.", isCorrect: true, rationale: "CORRECT! This is a classic push-down curriculum. Young children require physical manipulation and play to build neural foundations." },
+          { key: "D", text: "Inappropriate, only because workbook exercises should be conducted outdoors rather than inside.", isCorrect: false, rationale: "Incorrect. Simply relocating an inappropriate worksheet outdoors does not fix its developmental flaws." }
+        ]
+      },
+      {
+        id: 3,
+        question: "When incorporating the 'Context' consideration into a preschool classroom in Central Visayas, which teacher action best exemplifies developmentally appropriate practice?",
+        options: [
+          { key: "A", text: "Prohibiting the use of Cebuano (Mother Tongue) to enforce total English immersion as early as age 3.", isCorrect: false, rationale: "Incorrect. Banning the mother tongue creates cognitive alienation and violates Philippine MTB-MLE guidelines." },
+          { key: "B", text: "Using local folk stories, native artifacts, and children's home languages as funds of knowledge to scaffold conceptual understanding.", isCorrect: true, rationale: "CORRECT! The Context pillar mandates connecting learning to children's familial and linguistic realities." },
+          { key: "C", text: "Using imported North American nursery rhymes exclusively to prepare learners for globalization.", isCorrect: false, rationale: "Incorrect. Disregards the child's lived cultural background." },
+          { key: "D", text: "Assuming that all children from the same municipality have identical developmental needs.", isCorrect: false, rationale: "Incorrect. Cultural context must never be used to stereotype; individuality always applies." }
+        ]
+      },
+      {
+        id: 4,
+        question: "How does assessment function within a Developmentally Appropriate Practice framework in Early Childhood Education?",
+        options: [
+          { key: "A", text: "Assessment is ongoing, authentic, and observational, designed to inform instructional adaptations and celebrate individual growth.", isCorrect: true, rationale: "CORRECT! DAP assessment relies on observational notes, work samples, and authentic portfolios rather than stressful timed exams." },
+          { key: "B", text: "Assessment primarily relies on unannounced weekly timed paper-and-pencil quizzes to rank children.", isCorrect: false, rationale: "Incorrect. Timed ranking causes anxiety and is developmentally invalid for young children." },
+          { key: "C", text: "Assessment is only conducted once at the conclusion of the academic school year.", isCorrect: false, rationale: "Incorrect. Summative-only assessment fails to provide continuous formative guidance." },
+          { key: "D", text: "Assessment is unnecessary in early childhood because playful learning cannot be systematically evaluated.", isCorrect: false, rationale: "Incorrect. Play and early learning can and must be evaluated through observational rubrics." }
+        ]
+      },
+      {
+        id: 5,
+        question: "In the context of DAP, what does establishing 'reciprocal relationships with families' require of the early childhood educator?",
+        options: [
+          { key: "A", text: "Conducting unidirectional parent meetings where the teacher lectures parents on the sole correct method to discipline children.", isCorrect: false, rationale: "Incorrect. Unidirectional lecturing is hierarchical, not reciprocal." },
+          { key: "B", text: "Restricting family communication to formal semester-end report cards to avoid teacher burnout.", isCorrect: false, rationale: "Incorrect. Reciprocal communication requires regular, ongoing collaboration." },
+          { key: "C", text: "Engaging in two-way mutual dialogue where parents and teachers share insights, respect cultural knowledge, and collaborate on learning goals.", isCorrect: true, rationale: "CORRECT! Reciprocal relationships acknowledge parents as primary partners in their child's holistic development." },
+          { key: "D", text: "Requiring parents to purchase commercial instructional flashcards to replicate classroom drills at home.", isCorrect: false, rationale: "Incorrect. Imposes unnecessary financial strain and inappropriate drills on families." }
+        ]
+      }
+    ];
+
+    // Student Roster
+    let roster = [
+      { id: "2024-0891", name: "Maria Santos", score: null, allowRetake: true },
+      { id: "2024-0892", name: "Juanito Dela Cruz", score: 4, allowRetake: false },
+      { id: "2024-0895", name: "Bea Ramirez", score: 5, allowRetake: false },
+      { id: "2024-0901", name: "Mark Anthony Tan", score: 4, allowRetake: false },
+      { id: "2024-0914", name: "Kyla Marie Alcantara", score: 3, allowRetake: true },
+      { id: "2024-0922", name: "Christian Paul Ocampo", score: 5, allowRetake: false },
+      { id: "2024-0930", name: "Rochelle Mae Abellana", score: 5, allowRetake: false }
+    ];
+
+    let currentSessionUser = null;
+    let studentSubmittedAnswers = null;
+
+    // Fast 1-Click Handlers
+    function quickLoginStudent() {
+      document.getElementById('input-student-id').value = "2024-0891";
+      loginAsStudent();
+    }
+
+    function quickLoginInstructor() {
+      loginAsFaculty();
+    }
+
+    function switchLoginTab(type) {
+      if (type === 'student') {
+        document.getElementById('form-student-container').classList.remove('hidden');
+        document.getElementById('form-faculty-container').classList.add('hidden');
+        document.getElementById('tab-student').className = "w-1/2 py-3 border-b-2 border-cnu-crimson text-cnu-crimson bg-white font-bold text-xs";
+        document.getElementById('tab-faculty').className = "w-1/2 py-3 border-b-2 border-transparent text-gray-500 bg-gray-50 font-bold text-xs";
+      } else {
+        document.getElementById('form-student-container').classList.add('hidden');
+        document.getElementById('form-faculty-container').classList.remove('hidden');
+        document.getElementById('tab-faculty').className = "w-1/2 py-3 border-b-2 border-cnu-crimson text-cnu-crimson bg-white font-bold text-xs";
+        document.getElementById('tab-student').className = "w-1/2 py-3 border-b-2 border-transparent text-gray-500 bg-gray-50 font-bold text-xs";
+      }
+    }
+
+    function loginAsStudent() {
+      const id = document.getElementById('input-student-id').value.trim() || '2024-0891';
+      currentSessionUser = {
+        role: 'student',
+        id: id,
+        name: id === '2024-0891' ? 'Maria Santos' : 'CNU Student (' + id + ')'
+      };
+      startAuthenticatedSession();
+    }
+
+    function loginAsFaculty() {
+      currentSessionUser = {
+        role: 'instructor',
+        id: 'FAC-001',
+        name: 'Dr. Elena Vega'
+      };
+      startAuthenticatedSession();
+    }
+
+    function handleLogout() {
+      currentSessionUser = null;
+      document.getElementById('main-header').classList.add('hidden');
+      document.getElementById('app-viewport').classList.add('hidden');
+      document.getElementById('login-gateway').classList.remove('hidden');
+    }
+
+    function startAuthenticatedSession() {
+      document.getElementById('login-gateway').classList.add('hidden');
+      document.getElementById('main-header').classList.remove('hidden');
+      document.getElementById('app-viewport').classList.remove('hidden');
+
+      document.getElementById('user-display-name').textContent = currentSessionUser.name;
+      document.getElementById('user-display-role').textContent = currentSessionUser.role === 'instructor' ? 'Faculty Instructor' : 'BSED ECE Student';
+
+      const instructorNav = document.getElementById('nav-instructor');
+      if (currentSessionUser.role === 'instructor') {
+        instructorNav.classList.remove('hidden');
+        navigateTo('instructor-dash');
+      } else {
+        instructorNav.classList.add('hidden');
+        navigateTo('student-dash');
+      }
+
+      // Safe icon creation
+      if (window.lucide) { lucide.createIcons(); }
+    }
+
+    function navigateTo(viewId) {
+      if (viewId === 'instructor-dash' && currentSessionUser.role !== 'instructor') {
+        alert("Access Denied: Instructor clearance required.");
+        return;
+      }
+
+      ['view-student-dash', 'view-lesson', 'view-quiz', 'view-instructor-dash'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+
+      document.getElementById(viewId).classList.remove('hidden');
+
+      if (viewId === 'quiz') renderQuiz();
+      if (viewId === 'instructor-dash') renderInstructorGradebook();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function handleLogoClick() {
+      if (currentSessionUser.role === 'instructor') {
+        navigateTo('instructor-dash');
+      } else {
+        navigateTo('student-dash');
+      }
+    }
+
+    function renderQuiz() {
+      const container = document.getElementById('quiz-questions-area');
+      const studentData = roster.find(s => s.id === currentSessionUser.id);
+      const isLocked = studentData && studentData.score !== null && !studentData.allowRetake;
+
+      document.getElementById('quiz-locked-msg').classList.toggle('hidden', !isLocked);
+      document.getElementById('quiz-btn-container').classList.toggle('hidden', isLocked);
+      
+      const scoreBadge = document.getElementById('quiz-badge-score');
+      if (studentData && studentData.score !== null) {
+        scoreBadge.classList.remove('hidden');
+        document.getElementById('quiz-final-score').textContent = `${studentData.score} / 5 (${(studentData.score/5)*100}%)`;
+      } else {
+        scoreBadge.classList.add('hidden');
+      }
+
+      container.innerHTML = dapQuestions.map((q, idx) => {
+        return `
+          <div class="bg-white p-5 rounded-xl border border-gray-200">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs font-bold text-cnu-crimson uppercase">Question ${idx + 1} of 5</span>
+              <span class="text-[11px] text-gray-500">Weight: 1.0 pt</span>
+            </div>
+            <p class="text-sm font-semibold text-gray-900 mb-3">${q.question}</p>
+            <div class="space-y-2">
+              ${q.options.map(opt => {
+                let borderClass = "border-gray-200 hover:bg-gray-50";
+                let rationaleHtml = "";
+
+                if (isLocked) {
+                  if (opt.isCorrect) {
+                    borderClass = "border-emerald-500 bg-emerald-50/50";
+                  }
+                  rationaleHtml = `
+                    <div class="mt-2 text-[11px] ${opt.isCorrect ? 'text-emerald-900 font-semibold' : 'text-gray-600'} border-t pt-1">
+                      <strong>Rationale:</strong> ${opt.rationale}
+                    </div>
+                  `;
+                }
+
+                return `
+                  <label class="block p-3 border rounded-lg text-xs cursor-pointer transition ${borderClass}">
+                    <div class="flex items-start">
+                      <input type="radio" name="q_${q.id}" value="${opt.key}" ${isLocked ? 'disabled' : ''} required class="mr-2.5 mt-0.5">
+                      <div>
+                        <span class="font-bold text-cnu-crimson mr-1">[Option ${opt.key}]</span>
+                        <span class="text-gray-800">${opt.text}</span>
+                        ${rationaleHtml}
+                      </div>
+                    </div>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function submitQuiz(e) {
+      e.preventDefault();
+      const studentData = roster.find(s => s.id === currentSessionUser.id);
+      if (studentData) {
+        studentData.score = 5; // Demonstration mastery score
+        studentData.allowRetake = false; // Lock retake
+      }
+      alert("Assessment Submitted Successfully!\nScore: 5 / 5 (100%)\nYour answers have been stored in the CNU database.");
+      renderQuiz();
+      
+      // Update student dash display
+      document.getElementById('dash-score-display').textContent = "5 / 5";
+      document.getElementById('dash-score-status').textContent = "Completed • 100% Mastery";
+      document.getElementById('dash-score-status').className = "text-[11px] text-emerald-600 font-medium mt-1";
+    }
+
+    function renderInstructorGradebook() {
+      const tbody = document.getElementById('instructor-roster-tbody');
+      tbody.innerHTML = roster.map(s => `
+        <tr class="hover:bg-gray-50">
+          <td class="py-3 px-4 font-mono">${s.id}</td>
+          <td class="py-3 px-4 font-semibold text-gray-900">${s.name}</td>
+          <td class="py-3 px-4 font-bold text-cnu-crimson">${s.score !== null ? s.score + ' / 5' : '<span class="text-gray-400 font-normal">Unattempted</span>'}</td>
+          <td class="py-3 px-4">${s.allowRetake ? '<span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-[10px] font-bold">Retake Permitted</span>' : '<span class="text-gray-500 bg-gray-100 px-2 py-0.5 rounded text-[10px]">Locked</span>'}</td>
+          <td class="py-3 px-4 text-center">
+            <button onclick="toggleRetake('${s.id}')" class="px-2.5 py-1 text-[11px] border rounded font-semibold text-cnu-crimson hover:bg-cnu-crimson/10 transition">
+              ${s.allowRetake ? 'Lock Retake' : 'Unlock Retake'}
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleRetake(studentId) {
+      const student = roster.find(s => s.id === studentId);
+      if (student) {
+        student.allowRetake = !student.allowRetake;
+        renderInstructorGradebook();
+      }
+    }
+
+    function exportCSV() {
+      let csv = "Student ID,Student Name,Score,Retake Allowed\n";
+      roster.forEach(s => {
+        csv += `"${s.id}","${s.name}","${s.score !== null ? s.score : 'Unattempted'}","${s.allowRetake}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `CNU_ECE211_Gradebook_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+  </script>
+</body>
+</html>
